@@ -1,0 +1,7 @@
+venv/
+tryout/
+
+.env*
+!.env.example
+
+__pycache__*
