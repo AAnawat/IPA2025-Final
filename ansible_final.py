@@ -2,10 +2,14 @@ import subprocess
 
 def showrun():
     # read https://www.datacamp.com/tutorial/python-subprocess to learn more about subprocess
-    command = ['<!!!REPLACEME with ansible command to run playbook!!!>', '<!!!REPLACEME with playbook yaml file!!!>']
-    result = subprocess.run(command, capture_output=True, text=True)
+    command = ['ansible-playbook', './playbooks/copy_running_config.yml']
+    result = subprocess.run(command, capture_output=True, text=True, cwd="./ansible")
     result = result.stdout
+
     if 'ok=2' in result:
-        return <!!!REPLACEME!!!>
+        return "ok"
     else:
-        return '<!!!REPLACEME!!!>
+        return "fail"
+
+if __name__ == "__main__":
+    showrun()

@@ -16,6 +16,7 @@ from webex_utils.findRoom import find_webex_room
 from restconf_final import create, delete, enable, disable, status
 # from netconf_final import create, delete, enable, disable, status
 from netmiko_final import gigabit_status
+from ansible_final import showrun
 
 #######################################################################################
 # 2. Assign the Webex access token to the variable ACCESS_TOKEN using environment variables.
@@ -99,7 +100,7 @@ while True:
         elif command == "gigabit_status":
             text = gigabit_status()
         elif command == "showrun":
-            print("Got showrun")
+            responseMessage = showrun()
         else:
             responseMessage = "Error: No command or unknown command"
             continue
@@ -119,8 +120,8 @@ while True:
         # https://developer.webex.com/docs/basics for more detail
 
         if command == "showrun" and responseMessage == 'ok':
-            filename = "running_config.txt"
-            fileobject = open(f"./files/${filename}", "rt")
+            filename = "show_run_66070217_router1.txt"
+            fileobject = open(f"./files/{filename}", "rb")
             filetype = "text/plain"
             postData = {
                 "roomId": roomIdToGetMessages,
@@ -129,7 +130,7 @@ while True:
             }
             postData = MultipartEncoder(postData)
             HTTPHeaders = {
-                "Authorization": ACCESS_TOKEN,
+                "Authorization": f"Bearer {ACCESS_TOKEN}",
                 "Content-Type": postData.content_type
             }
         # other commands only send text, or no attached file.
@@ -147,6 +148,7 @@ while True:
             headers=HTTPHeaders,
         )
         if not r.status_code == 200:
+            print(r.json())
             raise Exception(
                 "Incorrect reply from Webex Teams API. Status code: {}".format(r.status_code)
             )

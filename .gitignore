@@ -5,3 +5,6 @@ tryout/
 !.env.example
 
 __pycache__*
+
+files/*
+!files/readme.md
