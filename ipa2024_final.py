@@ -15,6 +15,7 @@ from requests_toolbelt.multipart.encoder import MultipartEncoder
 from webex_utils.findRoom import find_webex_room
 from restconf_final import create, delete, enable, disable, status
 # from netconf_final import create, delete, enable, disable, status
+from netmiko_final import gigabit_status
 
 #######################################################################################
 # 2. Assign the Webex access token to the variable ACCESS_TOKEN using environment variables.
@@ -96,7 +97,7 @@ while True:
         elif command == "status":
             text = status()
         elif command == "gigabit_status":
-            print("Got gigabit_status")
+            text = gigabit_status()
         elif command == "showrun":
             print("Got showrun")
         else:
