@@ -1,12 +1,15 @@
 from ncclient import manager
+from dotenv import load_dotenv
 import xmltodict
-from pprint import pprint
+import os
+
+load_dotenv()
 
 m = manager.connect(
-        host="10.30.6.11",
+        host=os.environ.get("ROUTER_HOST"),
         port=830,
-        username="admin",
-        password="cisco",
+        username=os.environ.get("ROUTER_USER"),
+        password=os.environ.get("ROUTER_PASS"),
         hostkey_verify=False
     )
 
