@@ -13,8 +13,8 @@ from dotenv import load_dotenv
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 from webex_utils.findRoom import find_webex_room
-# from restconf_final import create, delete, enable, disable, status
-from netconf_final import create, delete, enable, disable, status
+from restconf_final import create, delete, enable, disable, status
+# from netconf_final import create, delete, enable, disable, status
 
 #######################################################################################
 # 2. Assign the Webex access token to the variable ACCESS_TOKEN using environment variables.
