@@ -5,6 +5,7 @@ tryout/
 !.env.example
 
 __pycache__*
+.vscode/
 
 files/*
 !files/readme.md
