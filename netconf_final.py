@@ -1,3 +1,7 @@
+# --------------------------------------------------------------
+# Import libraries and connect to device
+# --------------------------------------------------------------
+
 from ncclient import manager
 from dotenv import load_dotenv
 import xmltodict
@@ -13,7 +17,14 @@ m = manager.connect(
         hostkey_verify=False
     )
 
+
+# --------------------------------------------------------------
+# Core functions
+# --------------------------------------------------------------
+
+# Create Loopback66070217 interface
 def create():
+    # Define Netconf configuration for creating Loopback66070217 interface
     netconf_config = """
         <config>
             <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
@@ -31,32 +42,27 @@ def create():
             </interfaces>
         </config>
     """
-    
-    findInterface = """
-        <filter>
-            <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-                <interface><name>Loopback66070217</name></interface>
-            </interfaces>
-        </filter>
-    """
 
     try:
-        interfaceResult = netconf_get_config(findInterface)
-        xml_interface = interfaceResult.xml
-        if ("Loopback66070217" in xml_interface):
+        # Check if interface Loopback66070217 already exists
+        checkExist = check_interface_exist()
+        if (checkExist):
             raise Exception("Interface already exist.")
         
+        # Apply Netconf edit-config operation to create the interface
         netconf_reply = netconf_edit_config(netconf_config)
         xml_data = netconf_reply.xml
         print(xml_data)
         if ('<ok/>' in xml_data):
             return "Interface loopback 66070217 is created successfully"
-    except Exception as e:
-        print("Error!", e)
+    except:
+        print("Error!")
         return "Cannot create: Interface loopback 66070217"
 
 
+# Delete Loopback66070217 interface
 def delete():
+    # Define Netconf configuration for deleting Loopback66070217 interface
     netconf_config = """
         <config>
             <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
@@ -67,30 +73,25 @@ def delete():
         </config>
     """
 
-    findInterface = """
-        <filter>
-            <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-                <interface><name>Loopback66070217</name></interface>
-            </interfaces>
-        </filter>
-    """
-
     try:
-        findInterfaceResult = netconf_get_config(findInterface).xml
-        if ("Loopback66070217" in findInterfaceResult):
-            netconf_reply = netconf_edit_config(netconf_config)
-            xml_data = netconf_reply.xml
-            print(xml_data)
-            if '<ok/>' in xml_data:
-                return "Interface loopback 66070217 is deleted successfully"
-        else:
+        # Check if interface Loopback66070217 exists
+        checkExist = check_interface_exist()
+        if not (checkExist):
             raise Exception("Interface Loopback66070217 doesn't exist")
+        
+        # Apply Netconf edit-config operation to delete the interface
+        netconf_reply = netconf_edit_config(netconf_config)
+        xml_data = netconf_reply.xml
+        print(xml_data)
+        if '<ok/>' in xml_data:
+            return "Interface loopback 66070217 is deleted successfully"
     except:
         print("Error!")
         return "Cannot delete: Interface loopback 66070217"
 
-
+# Enable Loopback66070217 interface
 def enable():
+    # Define Netconf configuration for enabling Loopback66070217 interface
     netconf_config = """
         <config>
             <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
@@ -103,19 +104,13 @@ def enable():
         </config>
     """
 
-    findInterface = """
-        <filter>
-            <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-                <interface><name>Loopback66070217</name></interface>
-            </interfaces>
-        </filter>
-    """
-
     try:
-        findInterfaceResult = netconf_get_config(findInterface).xml
-        if not ("Loopback66070217" in findInterfaceResult):
+        # Check if interface Loopback66070217 exists
+        checkExist = check_interface_exist()
+        if not (checkExist):
             raise Exception("Interface Loopback66070217 doesn't exist")
         
+        # Apply Netconf edit-config operation to enable the interface
         netconf_reply = netconf_edit_config(netconf_config)
         xml_data = netconf_reply.xml
         print(xml_data)
@@ -125,8 +120,9 @@ def enable():
         print("Error!")
         return "Cannot enable: Interface loopback 66070217"
 
-
+# Enable Loopback66070217 interface
 def disable():
+    # Define Netconf configuration for disabling Loopback66070217 interface
     netconf_config = """
         <config>
             <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
@@ -139,35 +135,25 @@ def disable():
         </config>
     """
 
-    findInterface = """
-        <filter>
-            <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-                <interface><name>Loopback66070217</name></interface>
-            </interfaces>
-        </filter>
-    """
-
     try:
-        findInterfaceResult = netconf_get_config(findInterface).xml
-        if not ("Loopback66070217" in findInterfaceResult):
+        # Check if interface Loopback66070217 exists
+        checkExist = check_interface_exist()
+        if not (checkExist):
             raise Exception("Interface Loopback66070217 doesn't exist")
 
+        # Apply Netconf edit-config operation to disable the interface
         netconf_reply = netconf_edit_config(netconf_config)
         xml_data = netconf_reply.xml
         print(xml_data)
         if '<ok/>' in xml_data:
             return "Interface loopback 66070217 is shutdowned successfully"
-    except Exception as e:
-        print("Error!", e)
+    except:
+        print("Error!")
         return "Cannot shutdown: Interface loopback 66070217"
 
-def netconf_edit_config(netconf_config):
-    return  m.edit_config(target="running", config=netconf_config)
-
-def netconf_get_config(netconf_config):
-    return m.get_config(source="running", filter=netconf_config)
-
+# Get status of Loopback66070217 interface
 def status():
+    # Define Netconf filter to get interfaces-state information for Loopback66070217
     netconf_filter = """
         <filter>
             <interfaces-state xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
@@ -195,3 +181,30 @@ def status():
             return "No Interface loopback 66070123"
     except:
        print("Error!")
+
+
+# --------------------------------------------------------------
+# Helper functions
+# --------------------------------------------------------------
+
+# Applying Netconf edit-config operation
+def netconf_edit_config(netconf_config):
+    return  m.edit_config(target="running", config=netconf_config)
+
+# Getting configuration data using Netconf get-config operation
+def netconf_get_config(netconf_config):
+    return m.get_config(source="running", filter=netconf_config)
+
+# Check if interface Loopback66070217 exists
+# Returns: True if exists, False otherwise
+def check_interface_exist():
+    findInterface = """
+        <filter>
+            <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+                <interface><name>Loopback66070217</name></interface>
+            </interfaces>
+        </filter>
+    """
+    
+    interfaceResult = netconf_get_config(findInterface).xml
+    return ("Loopback66070217" in interfaceResult)
