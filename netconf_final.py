@@ -9,15 +9,6 @@ import os
 
 load_dotenv()
 
-m = manager.connect(
-        host=os.environ.get("ROUTER_HOST"),
-        port=830,
-        username=os.environ.get("ROUTER_USER"),
-        password=os.environ.get("ROUTER_PASS"),
-        hostkey_verify=False
-    )
-
-
 # --------------------------------------------------------------
 # Core functions
 # --------------------------------------------------------------
