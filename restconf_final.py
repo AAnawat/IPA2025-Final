@@ -30,6 +30,8 @@ basicauth = ("admin", "cisco")
 
 # Create Loopback66070217 interface
 def create():
+    refresh_session()
+    
     yangConfig = {
         "ietf-interfaces:interface": {
         "name": "Loopback66070217",
@@ -68,6 +70,8 @@ def create():
 
 # Delete Loopback66070217 interface
 def delete():
+    refresh_session()
+    
     resp = requests.delete(
         f"{api_url}/interface=Loopback66070217", 
         auth=basicauth, 
@@ -84,6 +88,8 @@ def delete():
 
 # Enable Loopback66070217 interface
 def enable():
+    refresh_session()
+    
     # Check if interface Loopback66070217 exists
     checkExist = check_interface_exist()
     if not (checkExist):
@@ -115,6 +121,8 @@ def enable():
 
 # Disable Loopback66070217 interface
 def disable():
+    refresh_session()
+    
     # Check if interface Loopback66070217 exists
     checkExist = check_interface_exist()
     if not (checkExist):
@@ -145,6 +153,8 @@ def disable():
 
 # Get status of Loopback66070217 interface
 def status():
+    refresh_session()
+    
     api_url_status = f"https://{HOST}/restconf/data/ietf-interfaces:interfaces-state/interface=Loopback66070217"
 
     resp = requests.get(
@@ -185,3 +195,10 @@ def check_interface_exist():
     )
     
     return not (queryInterface.status_code == 404)
+
+# Refresh RESTCONF session
+def refresh_session():
+    global HOST, api_url
+    
+    HOST = os.environ.get("ROUTER_HOST")
+    api_url = f"https://{HOST}/restconf/data/ietf-interfaces:interfaces"

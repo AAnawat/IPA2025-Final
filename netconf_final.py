@@ -153,6 +153,7 @@ def disable():
 
 # Get status of Loopback66070217 interface
 def status():
+    refresh_session()
     # Define Netconf filter to get interfaces-state information for Loopback66070217
     netconf_filter = """
         <filter>
@@ -174,11 +175,11 @@ def status():
             admin_status = netconf_reply_dict["rpc-reply"]["data"]["interfaces-state"]["interface"]["admin-status"]
             oper_status = netconf_reply_dict["rpc-reply"]["data"]["interfaces-state"]["interface"]["oper-status"]
             if admin_status == 'up' and oper_status == 'up':
-                return "Interface loopback 66070123 is enabled (checked by Netconf)"
+                return "Interface loopback 66070217 is enabled (checked by Netconf)"
             elif admin_status == 'down' and oper_status == 'down':
-                return "Interface loopback 66070123 is disabled (checked by Netconf)"
+                return "Interface loopback 66070217 is disabled (checked by Netconf)"
         else: # no operation-state data
-            return "No Interface loopback 66070123 (checked by Netconf)"
+            return "No Interface loopback 66070217 (checked by Netconf)"
     except:
        print("Error!")
 
@@ -189,10 +190,12 @@ def status():
 
 # Applying Netconf edit-config operation
 def netconf_edit_config(netconf_config):
+    refresh_session()
     return  m.edit_config(target="running", config=netconf_config)
 
 # Getting configuration data using Netconf get-config operation
 def netconf_get_config(netconf_config):
+    refresh_session()
     return m.get_config(source="running", filter=netconf_config)
 
 # Check if interface Loopback66070217 exists
@@ -208,3 +211,15 @@ def check_interface_exist():
     
     interfaceResult = netconf_get_config(findInterface).xml
     return ("Loopback66070217" in interfaceResult)
+
+# Refresh Netconf session
+def refresh_session():
+    global m
+    
+    m = manager.connect(
+        host=os.environ.get("ROUTER_HOST"),
+        port=830,
+        username=os.environ.get("ROUTER_USER"),
+        password=os.environ.get("ROUTER_PASS"),
+        hostkey_verify=False
+    )

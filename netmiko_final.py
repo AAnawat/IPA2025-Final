@@ -6,22 +6,26 @@ from pprint import pprint
 
 load_dotenv()
 
-# Device connection parameters from environment variables
-device_ip = os.environ.get("ROUTER_HOST")
-username = os.environ.get("ROUTER_USER")
-password = os.environ.get("ROUTER_PASS")
+# Refresh Netmiko session
+def refresh_session():
+    global device_ip, username, password, device_params
 
-# Define device parameters for Netmiko
-device_params = {
-    "device_type": "cisco_ios",
-    "ip": device_ip,
-    "username": username,
-    "password": password,
-}
+    device_ip = os.environ.get("ROUTER_HOST")
+    username = os.environ.get("ROUTER_USER")
+    password = os.environ.get("ROUTER_PASS")
+
+    device_params = {
+        "device_type": "cisco_ios",
+        "ip": device_ip,
+        "username": username,
+        "password": password,
+    }
 
 
 # Get gigabit interface status
 def gigabit_status():
+    refresh_session()
+    
     ans = ""
     with ConnectHandler(**device_params) as ssh:
         up = 0
