@@ -91,17 +91,16 @@ while True:
     # check if the text of the message starts with the magic character "/" followed by your studentID and a space and followed by a command name
     #  e.g.  "/66070123 create"
     if message.startswith("/66070217"):
-
         # extract the command
-        command = message.split()[-1]
         message_parts = message.split()
-        print(command)
 
 # 5. Complete the logic for each command
         responseMessage = None;
         text = None;
         
         if (len(message_parts) == 2):
+            command = message.split()[-1]
+            
             if (command in ["restconf", "netconf"]):
                 method = command
                 text = f"Ok: {method.capitalize()}"
@@ -113,45 +112,51 @@ while True:
         if (method == None):
             text = "Error: method not specified."
         
-        if (len(message_parts) == 3 and method != None):
+        if (len(message_parts) == 3):
+            os.environ["ROUTER_HOST"] = message_parts[1]
+            command = message_parts[2]
+            
+            if (method != None) and (command in ["create", "delete", "enable", "disable", "status"]):
+                if (method == "restconf"):
+                    if command == "create":
+                        text = rest_create()
+                    elif command == "delete":
+                        text = rest_delete()
+                    elif command == "enable":
+                        text = rest_enable()
+                    elif command == "disable":
+                        text = rest_disable()
+                    elif command == "status":
+                        text = rest_status()
+                elif (method == "netconf"):
+                    if command == "create":
+                        text = net_create()
+                    elif command == "delete":
+                        text = net_delete()
+                    elif command == "enable":
+                        text = net_enable()
+                    elif command == "disable":
+                        text = net_disable()
+                    elif command == "status":
+                        text = net_status()
+                else:
+                    text = "Error: method not supported."
+            
+            if (command in ["gigabit_status", "showrun", "motd"]):
+                if (command == "gigabit_status"):
+                    text = gigabit_status()
+                elif (command == "showrun"):
+                    responseMessage, filename = showrun()
+                elif (command == "motd"):
+                    text = "test in motd command"
+            
+        if (len(message_parts) > 3):
+            command = message_parts[2]
             os.environ["ROUTER_HOST"] = message_parts[1]
             
-            if (method == "restconf"):
-                if command == "create":
-                    text = rest_create()
-                elif command == "delete":
-                    text = rest_delete()
-                elif command == "enable":
-                    text = rest_enable()
-                elif command == "disable":
-                    text = rest_disable()
-                elif command == "status":
-                    text = rest_status()
-                else:
-                    text = "unknown command"
-            elif (method == "netconf"):
-                if command == "create":
-                    text = net_create()
-                elif command == "delete":
-                    text = net_delete()
-                elif command == "enable":
-                    text = net_enable()
-                elif command == "disable":
-                    text = net_disable()
-                elif command == "status":
-                    text = net_status()
-                else:
-                    text = "unknown command"
-            else:
-                text = "Error: method not supported."
-        
-        if (len(message_parts) == 3) and (command in ["gigabit_status", "showrun"]):
-            os.environ["ROUTER_HOST"] = message_parts[1]
+            motd_message = ' '.join(message_parts[3:])
+            text = motd_message
             
-            if command == "gigabit_status":
-                text = gigabit_status()
-            elif command == "showrun":
-                responseMessage, filename = showrun()
             
             
 # 6. Complete the code to post the message to the Webex Teams room.
