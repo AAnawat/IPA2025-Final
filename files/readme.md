@@ -1,0 +1,1 @@
+This folder use for store running_config file

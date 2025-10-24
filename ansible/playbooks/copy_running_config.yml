@@ -1,0 +1,17 @@
+- name: Copy Running Config from Router
+  hosts: router1
+  connection: network_cli
+  gather_facts: false
+
+  tasks:
+    - name: Show running config of router
+      cisco.ios.ios_command:
+        commands:
+          - show running-config
+      register: running_config
+    
+    - name: Save file to local
+      ansible.builtin.copy:
+        content: "{{ running_config.stdout[0] }}"
+        dest: "../../files/show_run_66070217_router1.txt"
+      delegate_to: localhost
