@@ -127,10 +127,6 @@ while True:
                     text = rest_disable()
                 elif command == "status":
                     text = rest_status()
-                elif command == "gigabit_status":
-                    text = gigabit_status()
-                elif command == "showrun":
-                    responseMessage = showrun()
                 else:
                     text = "unknown command"
             elif (method == "netconf"):
@@ -144,14 +140,19 @@ while True:
                     text = net_disable()
                 elif command == "status":
                     text = net_status()
-                elif command == "gigabit_status":
-                    text = gigabit_status()
-                elif command == "showrun":
-                    responseMessage = showrun()
                 else:
                     text = "unknown command"
             else:
                 text = "Error: method not supported."
+        
+        if (len(message_parts) == 3) and (command in ["gigabit_status", "showrun"]):
+            os.environ["ROUTER_HOST"] = message_parts[1]
+            
+            if command == "gigabit_status":
+                text = gigabit_status()
+            elif command == "showrun":
+                responseMessage, filename = showrun()
+            
             
 # 6. Complete the code to post the message to the Webex Teams room.
 
@@ -168,7 +169,6 @@ while True:
         # https://developer.webex.com/docs/basics for more detail
 
         if command == "showrun" and responseMessage == 'ok':
-            filename = "show_run_66070217_router1.txt"
             fileobject = open(f"./files/{filename}", "rb")
             filetype = "text/plain"
             postData = {

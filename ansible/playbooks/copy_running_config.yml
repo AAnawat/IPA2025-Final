@@ -1,7 +1,9 @@
 - name: Copy Running Config from Router
-  hosts: router1
+  hosts: router
   connection: network_cli
-  gather_facts: false
+  gather_facts: true
+  vars:
+    ansible_host: "{{ router_ip }}"
 
   tasks:
     - name: Show running config of router
@@ -13,5 +15,9 @@
     - name: Save file to local
       ansible.builtin.copy:
         content: "{{ running_config.stdout[0] }}"
-        dest: "../../files/show_run_66070217_router1.txt"
+        dest: "../../files/show_run_66070217_{{ ansible_net_hostname }}.txt"
       delegate_to: localhost
+    
+    - name: Display router hostname
+      ansible.builtin.debug:
+        msg: "show_run_66070217_{{ ansible_net_hostname }}.txt"

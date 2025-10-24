@@ -1,15 +1,23 @@
 import subprocess
+import re
+import os
 
 def showrun():
     # read https://www.datacamp.com/tutorial/python-subprocess to learn more about subprocess
-    command = ['ansible-playbook', './playbooks/copy_running_config.yml']
+    command = [
+        'ansible-playbook',
+        '--extra-vars',
+        f"router_ip={os.environ.get('ROUTER_HOST')}",
+        './playbooks/copy_running_config.yml'
+        ]
     result = subprocess.run(command, capture_output=True, text=True, cwd="./ansible")
     result = result.stdout
 
-    if 'ok=2' in result:
-        return "ok"
+    if 'ok=4' in result:
+        filename = re.findall('show_run_66070217_.*.txt', result)
+        return ("ok", filename[0])
     else:
-        return "fail"
+        return ("fail", None)
 
 if __name__ == "__main__":
     showrun()
