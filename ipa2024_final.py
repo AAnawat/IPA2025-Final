@@ -13,10 +13,20 @@ from dotenv import load_dotenv
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 from webex_utils.findRoom import find_webex_room
-from restconf_final import create, delete, enable, disable, status
-# from netconf_final import create, delete, enable, disable, status
 from netmiko_final import gigabit_status
 from ansible_final import showrun
+from restconf_final import \
+    create as rest_create, \
+    delete as rest_delete, \
+    enable as rest_enable, \
+    disable as rest_disable, \
+    status as rest_status
+from netconf_final import \
+    create as net_create, \
+    delete as net_delete, \
+    enable as net_enable, \
+    disable as net_disable, \
+    status as net_status 
 
 #######################################################################################
 # 2. Assign the Webex access token to the variable ACCESS_TOKEN using environment variables.
@@ -30,8 +40,11 @@ ACCESS_TOKEN = os.environ.get("AUTH_TOKEN")
 
 # Defines a variable that will hold the roomId
 roomIdToGetMessages = (
-    find_webex_room(ACCESS_TOKEN, "IPA-Final")["id"]
+    find_webex_room(ACCESS_TOKEN, "IPA2025")["id"]
 )
+
+# Defind variable used to control the use of restconf or netconf
+method = None
 
 while True:
     # always add 1 second of delay to the loop to not go over a rate limit of API calls
@@ -81,29 +94,64 @@ while True:
 
         # extract the command
         command = message.split()[-1]
+        message_parts = message.split()
         print(command)
 
 # 5. Complete the logic for each command
         responseMessage = None;
         text = None;
-
-        if command == "create":
-            text = create()
-        elif command == "delete":
-            text = delete()
-        elif command == "enable":
-            text = enable()
-        elif command == "disable":
-            text = disable()
-        elif command == "status":
-            text = status()
-        elif command == "gigabit_status":
-            text = gigabit_status()
-        elif command == "showrun":
-            responseMessage = showrun()
-        else:
-            responseMessage = "Error: No command or unknown command"
-            continue
+        
+        if (len(message_parts) == 2):
+            if (command in ["restconf", "netconf"]):
+                method = command
+                text = f"Ok: {method.capitalize()}"
+            elif (command in ["create", "delete", "enable", "disable", "status", "gigabit_status", "showrun"]):
+                text = "Error: No IP specified"
+            elif (all(part.isdigit() and 0 <= int(part) <= 255 for part in command.split('.'))):
+                text = "Error: No command found."
+        
+        if (method == None):
+            text = "Error: method not specified."
+        
+        if (len(message_parts) == 3 and method != None):
+            os.environ["ROUTER_HOST"] = message_parts[1]
+            
+            if (method == "restconf"):
+                if command == "create":
+                    text = rest_create()
+                elif command == "delete":
+                    text = rest_delete()
+                elif command == "enable":
+                    text = rest_enable()
+                elif command == "disable":
+                    text = rest_disable()
+                elif command == "status":
+                    text = rest_status()
+                elif command == "gigabit_status":
+                    text = gigabit_status()
+                elif command == "showrun":
+                    responseMessage = showrun()
+                else:
+                    text = "unknown command"
+            elif (method == "netconf"):
+                if command == "create":
+                    text = net_create()
+                elif command == "delete":
+                    text = net_delete()
+                elif command == "enable":
+                    text = net_enable()
+                elif command == "disable":
+                    text = net_disable()
+                elif command == "status":
+                    text = net_status()
+                elif command == "gigabit_status":
+                    text = gigabit_status()
+                elif command == "showrun":
+                    responseMessage = showrun()
+                else:
+                    text = "unknown command"
+            else:
+                text = "Error: method not supported."
             
 # 6. Complete the code to post the message to the Webex Teams room.
 

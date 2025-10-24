@@ -6,7 +6,6 @@ from pprint import pprint
 
 load_dotenv()
 
-
 # Device connection parameters from environment variables
 device_ip = os.environ.get("ROUTER_HOST")
 username = os.environ.get("ROUTER_USER")

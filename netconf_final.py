@@ -54,7 +54,7 @@ def create():
         xml_data = netconf_reply.xml
         print(xml_data)
         if ('<ok/>' in xml_data):
-            return "Interface loopback 66070217 is created successfully"
+            return "Interface loopback 66070217 is created successfully using Netconf"
     except:
         print("Error!")
         return "Cannot create: Interface loopback 66070217"
@@ -84,7 +84,7 @@ def delete():
         xml_data = netconf_reply.xml
         print(xml_data)
         if '<ok/>' in xml_data:
-            return "Interface loopback 66070217 is deleted successfully"
+            return "Interface loopback 66070217 is deleted successfully using Netconf"
     except:
         print("Error!")
         return "Cannot delete: Interface loopback 66070217"
@@ -115,7 +115,7 @@ def enable():
         xml_data = netconf_reply.xml
         print(xml_data)
         if '<ok/>' in xml_data:
-            return "Interface loopback 66070217 is enabled successfully"
+            return "Interface loopback 66070217 is enabled successfully using Netconf"
     except:
         print("Error!")
         return "Cannot enable: Interface loopback 66070217"
@@ -146,10 +146,10 @@ def disable():
         xml_data = netconf_reply.xml
         print(xml_data)
         if '<ok/>' in xml_data:
-            return "Interface loopback 66070217 is shutdowned successfully"
+            return "Interface loopback 66070217 is shutdowned successfully using Netconf"
     except:
         print("Error!")
-        return "Cannot shutdown: Interface loopback 66070217"
+        return "Cannot shutdown: Interface loopback 66070217 (checked by Netconf)"
 
 # Get status of Loopback66070217 interface
 def status():
@@ -174,11 +174,11 @@ def status():
             admin_status = netconf_reply_dict["rpc-reply"]["data"]["interfaces-state"]["interface"]["admin-status"]
             oper_status = netconf_reply_dict["rpc-reply"]["data"]["interfaces-state"]["interface"]["oper-status"]
             if admin_status == 'up' and oper_status == 'up':
-                return "Interface loopback 66070123 is enabled"
+                return "Interface loopback 66070123 is enabled (checked by Netconf)"
             elif admin_status == 'down' and oper_status == 'down':
-                return "Interface loopback 66070123 is disabled"
+                return "Interface loopback 66070123 is disabled (checked by Netconf)"
         else: # no operation-state data
-            return "No Interface loopback 66070123"
+            return "No Interface loopback 66070123 (checked by Netconf)"
     except:
        print("Error!")
 
