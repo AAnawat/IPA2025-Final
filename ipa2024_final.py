@@ -14,7 +14,7 @@ from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 from webex_utils.findRoom import find_webex_room
 from netmiko_final import gigabit_status
-from ansible_final import showrun
+from ansible_final import showrun, config_motd
 from restconf_final import \
     create as rest_create, \
     delete as rest_delete, \
@@ -155,8 +155,7 @@ while True:
             os.environ["ROUTER_HOST"] = message_parts[1]
             
             motd_message = ' '.join(message_parts[3:])
-            text = motd_message
-            
+            text = config_motd(motd_message)
             
             
 # 6. Complete the code to post the message to the Webex Teams room.

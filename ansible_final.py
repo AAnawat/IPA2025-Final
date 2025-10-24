@@ -19,5 +19,20 @@ def showrun():
     else:
         return ("fail", None)
 
+def config_motd(motd_message):
+    command = [
+        'ansible-playbook',
+        '--extra-vars',
+        f"router_ip={os.environ.get('ROUTER_HOST')} motd_message='{motd_message}'",
+        './playbooks/config_motd.yml'
+        ]
+    result = subprocess.run(command, capture_output=True, text=True, cwd="./ansible")
+    result = result.stdout
+
+    if 'ok=1' in result:
+        return "Ok: success"
+    else:
+        return "Fail: fail to configure motd"
+
 if __name__ == "__main__":
     showrun()

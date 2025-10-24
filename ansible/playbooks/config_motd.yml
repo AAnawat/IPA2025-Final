@@ -1,0 +1,13 @@
+- name: Copy Running Config from Router
+  hosts: router
+  connection: network_cli
+  gather_facts: false
+  vars:
+    ansible_host: "{{ router_ip }}"
+    motd_message: "{{ motd_message }}"
+  
+  tasks:
+    - name: config motd
+      cisco.ios.ios_config:
+        lines:
+          - banner motd @ {{ motd_message }} @
