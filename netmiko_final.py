@@ -47,3 +47,16 @@ def gigabit_status():
 
         pprint(ans)
         return ans
+
+def show_banner_motd():
+    refresh_session()
+    
+    ans = ""
+    with ConnectHandler(**device_params) as ssh:
+        banner = ssh.send_command("show banner motd", use_textfsm=True, read_timeout=60)
+        ans = banner.strip()
+        
+        if (ans == ""):
+            ans = "Error: No MOTD Configured"
+        
+        return ans

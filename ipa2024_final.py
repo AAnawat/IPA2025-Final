@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 from webex_utils.findRoom import find_webex_room
-from netmiko_final import gigabit_status
+from netmiko_final import gigabit_status, show_banner_motd
 from ansible_final import showrun, config_motd
 from restconf_final import \
     create as rest_create, \
@@ -148,7 +148,7 @@ while True:
                 elif (command == "showrun"):
                     responseMessage, filename = showrun()
                 elif (command == "motd"):
-                    text = "test in motd command"
+                    text = show_banner_motd()
             
         if (len(message_parts) > 3):
             command = message_parts[2]
