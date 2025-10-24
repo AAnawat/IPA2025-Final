@@ -96,7 +96,7 @@ while True:
 
 # 5. Complete the logic for each command
         responseMessage = None;
-        text = None;
+        text = "Error: Command not recognized.";
         
         if (len(message_parts) == 2):
             command = message.split()[-1]
